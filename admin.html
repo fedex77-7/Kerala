@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEAM REXO | Categorized Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #0b0c10; color: #fff; }
+        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 12px; }
+        
+        .login-box { max-width: 400px; margin: 100px auto; padding: 30px; text-align: center; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; background: linear-gradient(45deg, #00f0ff, #7000ff); color: #fff; font-weight: 600; cursor: pointer; }
+
+        .dashboard { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .sidebar-menu { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .menu-btn { padding: 10px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff; cursor: pointer; border-radius: 6px; }
+        .menu-btn.active { background: #00f0ff; color: #000; font-weight: bold; }
+
+        .panel-section { display: none; padding: 20px; }
+        .panel-section.active { display: block; }
+
+        input, select { width: 100%; padding: 10px; margin: 5px 0 15px 0; background: rgba(11, 12, 16, 0.8); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #fff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid rgba(255,255,255,0.1); padding: 10px; text-align: left; font-size: 0.85rem; }
+        th { background: rgba(0, 240, 255, 0.2); }
+    </style>
+</head>
+<body>
+
+    <!-- Login Form -->
+    <div id="login-container" class="login-box glass">
+        <h2 style="font-family: 'Orbitron'; color: #00f0ff; margin-bottom: 20px;">ADMIN LOGIN</h2>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button class="btn" onclick="login()" style="width: 100%;">LOGIN</button>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="dashboard-container" class="dashboard">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1 style="font-family: 'Orbitron'; color: #00f0ff;">REXO CONTROL PANEL</h1>
+            <button class="btn" onclick="logout()" style="background: red;">LOGOUT</button>
+        </div>
+
+        <div class="sidebar-menu">
+            <button class="menu-btn active" onclick="switchTab('branding')">Logo & Settings</button>
+            <button class="menu-btn" onclick="switchTab('leadership')">Leadership Links</button>
+            <button class="menu-btn" onclick="switchTab('roster')">Categorized Roster</button>
+            <button class="menu-btn" onclick="switchTab('logs')">Join Requests & IP Logs</button>
+        </div>
+
+        <!-- Branding & Logo -->
+        <div id="branding" class="panel-section glass active">
+            <h3>Website Branding</h3>
+            <label>Logo Image URL:</label>
+            <input type="text" id="cfg-logo">
+            <label>Instagram Group Link:</label>
+            <input type="text" id="cfg-group">
+            <button class="btn" onclick="saveSettings()">Save Branding</button>
+        </div>
+
+        <!-- Leadership Setup -->
+        <div id="leadership" class="panel-section glass">
+            <h3>Leader Settings</h3>
+            <input type="text" id="l-name" placeholder="Leader Name">
+            <input type="text" id="l-uid" placeholder="Leader UID">
+            <input type="text" id="l-dm" placeholder="Leader Insta DM Link">
+
+            <h3>Acting Leader Settings</h3>
+            <input type="text" id="a-name" placeholder="Acting Leader Name">
+            <input type="text" id="a-uid" placeholder="Acting Leader UID">
+            <input type="text" id="a-dm" placeholder="Acting Leader Insta DM Link">
+
+            <h3>Elder Settings</h3>
+            <input type="text" id="e-name" placeholder="Elder Name">
+            <input type="text" id="e-uid" placeholder="Elder UID">
+            <input type="text" id="e-dm" placeholder="Elder Insta DM Link">
+
+            <button class="btn" onclick="saveLeadership()">Save Leadership Info</button>
+        </div>
+
+        <!-- Categorized Roster Manager -->
+        <div id="roster" class="panel-section glass">
+            <h3>Categorized 60 Players Roster</h3>
+            
+            <!-- Category Dropdown Filter for Easy Editing -->
+            <label style="color: #00f0ff; font-weight: bold;">Select Category/Squad to Edit:</label>
+            <select id="squadSelector" onchange="renderCategorizedRosterInputs()">
+                <option value="squad1">Squad 1 (Players 1 to 15)</option>
+                <option value="squad2">Squad 2 (Players 16 to 30)</option>
+                <option value="squad3">Squad 3 (Players 31 to 45)</option>
+                <option value="squad4">Squad 4 (Players 46 to 60)</option>
+            </select>
+
+            <div id="roster-inputs" style="margin-top: 15px;">
+                <!-- Dynamically loaded based on selected squad -->
+            </div>
+            <button class="btn" onclick="saveRoster()" style="margin-top: 15px;">Save All Roster Changes</button>
+        </div>
+
+        <!-- IP Logs & Join Requests -->
+        <div id="logs" class="panel-section glass">
+            <h3>Join Applications & Visitor IP Logs</h3>
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Name</th>
+                        <th>UID</th>
+                        <th>Phone</th>
+                        <th>IP Address</th>
+                        <th>ISP Provider</th>
+                    </tr>
+                </thead>
+                <tbody id="logBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let fullRosterData = [];
+
+        function login() {
+            const u = document.getElementById('adminUser').value;
+            const p = document.getElementById('adminPass').value;
+            if(u === 'admin' && p === 'rexo123') {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('dashboard-container').style.display = 'block';
+                loadAdminData();
+            } else {
+                alert('Invalid Username/Password');
+            }
+        }
+
+        function logout() { location.reload(); }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.panel-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function loadAdminData() {
+            const data = JSON.parse(localStorage.getItem('rexoData')) || {};
+            if(data.logo) document.getElementById('cfg-logo').value = data.logo;
+            if(data.instaGroup) document.getElementById('cfg-group').value = data.instaGroup;
+
+            if(data.leadership) {
+                document.getElementById('l-name').value = data.leadership.leader.name;
+                document.getElementById('l-uid').value = data.leadership.leader.uid;
+                document.getElementById('l-dm').value = data.leadership.leader.dm;
+
+                document.getElementById('a-name').value = data.leadership.acting.name;
+                document.getElementById('a-uid').value = data.leadership.acting.uid;
+                document.getElementById('a-dm').value = data.leadership.acting.dm;
+
+                document.getElementById('e-name').value = data.leadership.elder.name;
+                document.getElementById('e-uid').value = data.leadership.elder.uid;
+                document.getElementById('e-dm').value = data.leadership.elder.dm;
+            }
+
+            fullRosterData = data.roster || Array.from({ length: 60 }, (_, i) => ({
+                name: `REXO Player ${i + 1}`,
+                uid: `UID${10000 + i}`,
+                category: i < 15 ? 'squad1' : i < 30 ? 'squad2' : i < 45 ? 'squad3' : 'squad4'
+            }));
+
+            renderCategorizedRosterInputs();
+
+            // Logs
+            const logs = JSON.parse(localStorage.getItem('rexoLogs')) || [];
+            const logBody = document.getElementById('logBody');
+            logBody.innerHTML = '';
+            logs.forEach(l => {
+                logBody.innerHTML += `<tr><td>${l.date}</td><td>${l.name}</td><td>${l.uid}</td><td>${l.phone}</td><td>${l.ip}</td><td>${l.isp}</td></tr>`;
+            });
+        }
+
+        function renderCategorizedRosterInputs() {
+            const selectedSquad = document.getElementById('squadSelector').value;
+            const container = document.getElementById('roster-inputs');
+            container.innerHTML = '';
+
+            fullRosterData.forEach((p, index) => {
+                if(p.category === selectedSquad) {
+                    container.innerHTML += `
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;" class="glass" style="padding:10px;">
+                            <span style="color:#00f0ff; font-weight:bold; width:40px;">#${index+1}</span>
+                            <input type="text" value="${p.name}" id="r-name-${index}" placeholder="Player Name" style="margin:0;">
+                            <input type="text" value="${p.uid}" id="r-uid-${index}" placeholder="FF UID" style="margin:0;">
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function saveSettings() {
+            let data = JSON.parse(localStorage.getItem('rexoData')) || {};
+            data.logo = document.getElementById('cfg-logo').value;
+            data.instaGroup = document.getElementById('cfg-group').value;
+            localStorage.setItem('rexoData', JSON.stringify(data));
+            alert('Branding Updated!');
+        }
+
+        function saveLeadership() {
+            let data = JSON.parse(localStorage.getItem('rexoData')) || {};
+            data.leadership = {
+                leader: { name: document.getElementById('l-name').value, uid: document.getElementById('l-uid').value, dm: document.getElementById('l-dm').value },
+                acting: { name: document.getElementById('a-name').value, uid: document.getElementById('a-uid').value, dm: document.getElementById('a-dm').value },
+                elder: { name: document.getElementById('e-name').value, uid: document.getElementById('e-uid').value, dm: document.getElementById('e-dm').value }
+            };
+            localStorage.setItem('rexoData', JSON.stringify(data));
+            alert('Leadership Info Saved!');
+        }
+
+        function saveRoster() {
+            let data = JSON.parse(localStorage.getItem('rexoData')) || {};
+            
+            fullRosterData.forEach((p, index) => {
+                const nameEl = document.getElementById(`r-name-${index}`);
+                const uidEl = document.getElementById(`r-uid-${index}`);
+                if(nameEl && uidEl) {
+                    fullRosterData[index].name = nameEl.value;
+                    fullRosterData[index].uid = uidEl.value;
+                }
+            });
+
+            data.roster = fullRosterData;
+            localStorage.setItem('rexoData', JSON.stringify(data));
+            alert('Roster Changes Saved!');
+        }
+    </script>
+</body>
+</html>
