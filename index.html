@@ -3,350 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEAM REXO | Official Guild Page</title>
-    <!-- Sleek Gaming Fonts (Rajdhani & Inter) -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>TEAM REXO | Official Guild</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #060709; color: #f1f5f9; overflow-x: hidden; font-size: 0.9rem; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, 'Inter', sans-serif; }
+        body { background: #000; color: #fff; overflow-x: hidden; font-size: 0.9rem; }
 
-        /* Liquid Animated Background Blobs */
-        .liquid-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
-        .blob { position: absolute; border-radius: 50%; filter: blur(100px); animation: liquidMove 14s infinite alternate ease-in-out; }
-        .blob-1 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(0, 240, 255, 0.4) 0%, rgba(0,0,0,0) 70%); top: -80px; left: -80px; }
-        .blob-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(112, 0, 255, 0.5) 0%, rgba(0,0,0,0) 70%); bottom: -100px; right: -80px; animation-delay: -5s; }
+        /* iOS Liquid Ambient Animation Background */
+        .liquid-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; filter: blur(90px); }
+        .blob { position: absolute; border-radius: 50%; animation: iosLiquid 10s infinite alternate ease-in-out; }
+        .blob1 { width: 320px; height: 320px; background: rgba(0, 240, 255, 0.35); top: -50px; left: -50px; }
+        .blob2 { width: 380px; height: 380px; background: rgba(112, 0, 255, 0.4); bottom: -80px; right: -50px; animation-delay: -4s; }
+        .blob3 { width: 250px; height: 250px; background: rgba(255, 0, 128, 0.3); top: 40%; left: 30%; animation-delay: -2s; }
 
-        @keyframes liquidMove {
+        @keyframes iosLiquid {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, 60px) scale(1.1); }
+            100% { transform: translate(60px, 40px) scale(1.15); }
         }
 
-        /* Extreme Liquid Glassmorphism Effect */
-        .extreme-glass {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* iOS Glassmorphism Card Style */
+        .ios-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        /* Header (No Admin Link for Privacy) */
-        header { position: fixed; top: 12px; width: 90%; left: 5%; padding: 10px 25px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
-        .logo-container { display: flex; align-items: center; gap: 12px; }
-        .guild-logo { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1.5px solid #00f0ff; box-shadow: 0 0 10px rgba(0,240,255,0.4); }
-        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; letter-spacing: 1.5px; text-shadow: 0 0 8px rgba(0,240,255,0.5); }
+        header { position: fixed; top: 15px; width: 92%; left: 4%; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
+        .logo-box { display: flex; align-items: center; gap: 12px; }
+        .guild-logo { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(0, 240, 255, 0.8); }
+        .logo-text { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; }
 
-        /* Compact Sleek Buttons */
         .btn {
-            padding: 9px 20px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #00f0ff, #7000ff);
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            box-shadow: 0 0 12px rgba(0,240,255,0.3);
-            transition: all 0.25s ease;
+            padding: 10px 18px; border: none; border-radius: 12px;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 0.85rem;
+            letter-spacing: 1px; cursor: pointer; text-decoration: none; display: inline-block;
+            border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease;
         }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(112,0,255,0.6); }
-        .btn:disabled { background: #334155; cursor: not-allowed; box-shadow: none; transform: none; }
+        .btn-glow { background: linear-gradient(135deg, #00f0ff, #7000ff); border: none; }
+        .btn:hover { transform: scale(1.03); }
 
-        /* Hero Section */
-        .hero { height: 60vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 0 20px; margin-top: 40px; }
-        .hero h1 {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: linear-gradient(180deg, #ffffff 0%, #00f0ff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
-        .hero p { font-size: 0.95rem; color: #94a3b8; margin-bottom: 20px; font-weight: 300; }
+        .hero { height: 45vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; margin-top: 60px; }
+        .hero h1 { font-family: 'Rajdhani', sans-serif; font-size: 3.2rem; font-weight: 700; background: linear-gradient(180deg, #fff, #00f0ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        .section { max-width: 900px; margin: 30px auto; padding: 25px; }
-        .section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.4rem; font-weight: 700; color: #00f0ff; margin-bottom: 20px; text-align: center; letter-spacing: 1px; }
+        .section { max-width: 950px; margin: 25px auto; padding: 20px; }
+        .section-title { font-family: 'Rajdhani', sans-serif; font-size: 1.5rem; color: #00f0ff; text-align: center; margin-bottom: 20px; }
 
-        /* Leadership Section */
-        .leader-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
-        .card { padding: 20px; text-align: center; }
-        .card h3 { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
-        .card h4 { font-size: 1.1rem; color: #fff; margin-bottom: 4px; font-weight: 600; }
-        .card p { font-size: 0.8rem; color: #64748b; margin-bottom: 12px; }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .card { padding: 18px; text-align: center; }
 
-        /* Input Form */
         .form-group { margin-bottom: 12px; }
-        .form-group input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 0.85rem;
-            transition: 0.3s;
-        }
-        .form-group input:focus { outline: none; border-color: #00f0ff; box-shadow: 0 0 10px rgba(0,240,255,0.3); }
+        .form-group input { width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; color: #fff; outline: none; }
 
-        /* Roster Modal Pop-up System */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            width: 90%;
-            max-width: 700px;
-            max-height: 80vh;
-            overflow-y: auto;
-            padding: 25px;
-            position: relative;
-        }
-        .close-btn { position: absolute; top: 15px; right: 20px; background: none; border: none; color: #ff0055; font-size: 1.5rem; cursor: pointer; }
+        /* Modal Popup */
+        .modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); display: none; justify-content: center; align-items: center; z-index: 3000; }
+        .modal-body { width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; padding: 25px; position: relative; }
         .roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 15px; }
-        .player-card { padding: 12px; border-left: 3px solid #00f0ff; background: rgba(255,255,255,0.02); border-radius: 6px; }
-
-        #statusMessage { margin-top: 10px; font-weight: 600; text-align: center; font-size: 0.85rem; display: none; }
-
-        footer { text-align: center; padding: 30px 20px; margin-top: 40px; }
-        .footer-buttons { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 10px; }
-        .btn-outline { background: transparent; border: 1px solid #00f0ff; box-shadow: none; }
+        .p-card { padding: 12px; background: rgba(255,255,255,0.03); border-left: 3px solid #00f0ff; border-radius: 8px; }
     </style>
 </head>
 <body>
-    <div class="liquid-container">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-    </div>
+    <div class="liquid-bg"><div class="blob blob1"></div><div class="blob blob2"></div><div class="blob blob3"></div></div>
 
-    <header class="extreme-glass">
-        <div class="logo-container">
-            <img id="display-logo" src="https://via.placeholder.com/150" alt="Team Rexo Logo" class="guild-logo">
+    <header class="ios-glass">
+        <div class="logo-box">
+            <img id="site-logo" src="https://via.placeholder.com/150" class="guild-logo">
             <div class="logo-text">TEAM REXO</div>
         </div>
-        <button class="btn" onclick="openRosterModal()">VIEW GUILD ROSTER</button>
+        <button class="btn btn-glow" onclick="openModal()">GUILD ROSTER</button>
     </header>
 
     <section class="hero">
         <h1>TEAM REXO</h1>
-        <p>Official Free Fire Guild Community Platform</p>
-        <div>
-            <a href="#join" class="btn">SEND JOIN REQUEST</a>
-        </div>
+        <p style="color:#aaa;">Official Free Fire Esports Guild</p>
     </section>
 
     <!-- Leadership Section -->
-    <section class="section extreme-glass">
+    <section class="section ios-glass">
         <h2 class="section-title">GUILD LEADERSHIP</h2>
-        <div class="leader-grid">
-            <div class="card extreme-glass">
-                <h3 style="color: #00f0ff;">LEADER</h3>
-                <h4 id="leader-name">Loading...</h4>
-                <p id="leader-uid">UID: -</p>
-                <a id="leader-dm" href="#" target="_blank" class="btn" style="font-size: 0.75rem; padding: 6px 14px;">DM LEADER</a>
-            </div>
-            <div class="card extreme-glass">
-                <h3 style="color: #7000ff;">ACTING LEADER</h3>
-                <h4 id="acting-name">Loading...</h4>
-                <p id="acting-uid">UID: -</p>
-                <a id="acting-dm" href="#" target="_blank" class="btn" style="font-size: 0.75rem; padding: 6px 14px;">DM ACTING</a>
-            </div>
-            <div class="card extreme-glass">
-                <h3 style="color: #ff007f;">ELDER / OFFICER</h3>
-                <h4 id="elder-name">Loading...</h4>
-                <p id="elder-uid">UID: -</p>
-                <a id="elder-dm" href="#" target="_blank" class="btn" style="font-size: 0.75rem; padding: 6px 14px;">DM OFFICER</a>
-            </div>
+        <div class="grid-cards">
+            <div class="card ios-glass"><h3 style="color:#00f0ff;">LEADER</h3><h4 id="l-name">Loading...</h4><p id="l-uid" style="color:#888;">UID: -</p><a id="l-dm" href="#" target="_blank" class="btn" style="margin-top:8px; font-size:0.75rem;">DM LEADER</a></div>
+            <div class="card ios-glass"><h3 style="color:#7000ff;">ACTING LEADER</h3><h4 id="a-name">Loading...</h4><p id="a-uid" style="color:#888;">UID: -</p><a id="a-dm" href="#" target="_blank" class="btn" style="margin-top:8px; font-size:0.75rem;">DM ACTING</a></div>
+            <div class="card ios-glass"><h3 style="color:#ff007f;">OFFICER 1</h3><h4 id="o1-name">Loading...</h4><p id="o1-uid" style="color:#888;">UID: -</p><a id="o1-dm" href="#" target="_blank" class="btn" style="margin-top:8px; font-size:0.75rem;">DM OFFICER</a></div>
+            <div class="card ios-glass"><h3 style="color:#ff007f;">OFFICER 2</h3><h4 id="o2-name">Loading...</h4><p id="o2-uid" style="color:#888;">UID: -</p><a id="o2-dm" href="#" target="_blank" class="btn" style="margin-top:8px; font-size:0.75rem;">DM OFFICER</a></div>
+            <div class="card ios-glass"><h3 style="color:#ff007f;">OFFICER 3</h3><h4 id="o3-name">Loading...</h4><p id="o3-uid" style="color:#888;">UID: -</p><a id="o3-dm" href="#" target="_blank" class="btn" style="margin-top:8px; font-size:0.75rem;">DM OFFICER</a></div>
         </div>
     </section>
 
-    <!-- Form Section -->
-    <section id="join" class="section extreme-glass" style="max-width: 500px;">
+    <!-- Join Form -->
+    <section class="section ios-glass" style="max-width: 500px;">
         <h2 class="section-title">JOIN TEAM REXO</h2>
         <form id="joinForm">
-            <div class="form-group"><input type="text" id="pName" placeholder="Free Fire Name" required></div>
+            <div class="form-group"><input type="text" id="pName" placeholder="Free Fire Player Name" required></div>
             <div class="form-group"><input type="text" id="pUid" placeholder="Free Fire UID" required></div>
             <div class="form-group"><input type="email" id="pEmail" placeholder="Email Address" required></div>
-            <div class="form-group"><input type="text" id="pInsta" placeholder="Instagram Username or Profile Link" required></div>
-            <button type="submit" id="submitBtn" class="btn" style="width: 100%; padding: 12px; margin-top: 5px;">SUBMIT APPLICATION</button>
-            <div id="statusMessage"></div>
+            <div class="form-group"><input type="text" id="pInsta" placeholder="Instagram Profile Link" required></div>
+            <button type="submit" id="subBtn" class="btn btn-glow" style="width: 100%; padding: 12px;">SUBMIT APPLICATION</button>
+            <p id="msg" style="text-align:center; margin-top:10px; color:#00f0ff; display:none; font-weight:bold;"></p>
         </form>
     </section>
 
-    <!-- Footer DMS & Join Options -->
-    <footer class="extreme-glass">
-        <p style="color: #64748b; font-size: 0.8rem;">Connect with Team Rexo Official</p>
-        <div class="footer-buttons">
-            <a id="main-insta-dm" href="#" target="_blank" class="btn btn-outline">INSTAGRAM DMS</a>
-            <a id="insta-group-link" href="#" target="_blank" class="btn">JOIN OUR GROUP</a>
-        </div>
+    <!-- Footer Links -->
+    <footer style="text-align: center; padding: 30px;">
+        <a id="grp-link" href="#" target="_blank" class="btn btn-glow" style="padding: 12px 25px;">JOIN INSTAGRAM GROUP</a>
     </footer>
 
-    <!-- Roster Pop-up Modal (60 Players) -->
-    <div id="rosterModal" class="modal-overlay">
-        <div class="modal-content extreme-glass">
-            <button class="close-btn" onclick="closeRosterModal()">&times;</button>
-            <h2 class="section-title" style="margin-bottom: 10px;">GUILD ROSTER (60 MEMBERS)</h2>
-            <div class="roster-grid" id="modal-roster-list">
-                <!-- Dynamically Loaded -->
-            </div>
+    <!-- Roster Popup -->
+    <div id="rosterModal" class="modal">
+        <div class="modal-body ios-glass">
+            <button onclick="closeModal()" style="position:absolute; top:15px; right:20px; background:none; border:none; color:#ff0055; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <h2 class="section-title">50 GUILD MEMBERS</h2>
+            <div class="roster-grid" id="roster-list"></div>
         </div>
     </div>
 
     <script>
-        let fullRoster = [];
-
-        const defaultData = {
-            logo: "https://via.placeholder.com/150",
-            instaGroup: "https://instagram.com",
-            leadership: {
-                leader: { name: "REXO_BOSS", uid: "12345678", dm: "https://instagram.com" },
-                acting: { name: "REXO_ACTING", uid: "87654321", dm: "https://instagram.com" },
-                elder: { name: "REXO_ELDER", uid: "11223344", dm: "https://instagram.com" }
-            },
-            roster: Array.from({ length: 60 }, (_, i) => ({
-                name: `REXO Player ${i + 1}`,
-                uid: `UID${10000 + i}`
-            }))
+        // Firebase Config
+        const firebaseConfig = {
+            databaseURL: "https://team-rexo-web-default-rtdb.firebaseio.com"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        function loadSiteData() {
-            const data = JSON.parse(localStorage.getItem('rexoData')) || defaultData;
-            fullRoster = data.roster;
-            document.getElementById('display-logo').src = data.logo;
-            document.getElementById('main-insta-dm').href = data.leadership.leader.dm;
-            document.getElementById('insta-group-link').href = data.instaGroup;
+        let rosterData = [];
 
-            document.getElementById('leader-name').innerText = data.leadership.leader.name;
-            document.getElementById('leader-uid').innerText = "UID: " + data.leadership.leader.uid;
-            document.getElementById('leader-dm').href = data.leadership.leader.dm;
+        // Realtime Data Sync
+        db.ref('rexoData').on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            if(data.logo) document.getElementById('site-logo').src = data.logo;
+            if(data.groupLink) document.getElementById('grp-link').href = data.groupLink;
 
-            document.getElementById('acting-name').innerText = data.leadership.acting.name;
-            document.getElementById('acting-uid').innerText = "UID: " + data.leadership.acting.uid;
-            document.getElementById('acting-dm').href = data.leadership.acting.dm;
-
-            document.getElementById('elder-name').innerText = data.leadership.elder.name;
-            document.getElementById('elder-uid').innerText = "UID: " + data.leadership.elder.uid;
-            document.getElementById('elder-dm').href = data.leadership.elder.dm;
-
-            // Anti-Spam Check
-            if(localStorage.getItem('rexoSubmitted')) {
-                disableFormSuccess();
+            if(data.leadership) {
+                const l = data.leadership;
+                if(l.leader) { document.getElementById('l-name').innerText = l.leader.name; document.getElementById('l-uid').innerText = "UID: " + l.leader.uid; document.getElementById('l-dm').href = l.leader.dm; }
+                if(l.acting) { document.getElementById('a-name').innerText = l.acting.name; document.getElementById('a-uid').innerText = "UID: " + l.acting.uid; document.getElementById('a-dm').href = l.acting.dm; }
+                if(l.officer1) { document.getElementById('o1-name').innerText = l.officer1.name; document.getElementById('o1-uid').innerText = "UID: " + l.officer1.uid; document.getElementById('o1-dm').href = l.officer1.dm; }
+                if(l.officer2) { document.getElementById('o2-name').innerText = l.officer2.name; document.getElementById('o2-uid').innerText = "UID: " + l.officer2.uid; document.getElementById('o2-dm').href = l.officer2.dm; }
+                if(l.officer3) { document.getElementById('o3-name').innerText = l.officer3.name; document.getElementById('o3-uid').innerText = "UID: " + l.officer3.uid; document.getElementById('o3-dm').href = l.officer3.dm; }
             }
-        }
 
-        function openRosterModal() {
-            const container = document.getElementById('modal-roster-list');
+            rosterData = data.roster || [];
+        });
+
+        function openModal() {
+            const container = document.getElementById('roster-list');
             container.innerHTML = '';
-            fullRoster.forEach((player, idx) => {
+            rosterData.forEach((p, idx) => {
                 container.innerHTML += `
-                    <div class="player-card">
-                        <span style="color:#00f0ff; font-size:0.75rem; font-weight:bold;">#${idx+1}</span>
-                        <h4 style="color:#fff; font-size:0.9rem; font-family:'Rajdhani';">${player.name}</h4>
-                        <p style="font-size:0.75rem; color:#64748b;">${player.uid}</p>
+                    <div class="p-card">
+                        <span style="color:#00f0ff; font-weight:bold; font-size:0.75rem;">#${idx+1}</span>
+                        <h4 style="color:#fff; font-family:'Rajdhani';">${p.name || 'Player'}</h4>
+                        <p style="color:#888; font-size:0.75rem;">UID: ${p.uid || '-'}</p>
+                        <div style="display:flex; justify-content:space-between; margin-top:5px; font-size:0.75rem;">
+                            <span>LVL: <b style="color:#fff;">${p.level || '60'}</b></span>
+                            <span>K/D: <b style="color:#ff00f0;">${p.kd || '2.0'}</b></span>
+                        </div>
                     </div>
                 `;
             });
             document.getElementById('rosterModal').style.display = 'flex';
         }
 
-        function closeRosterModal() {
-            document.getElementById('rosterModal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('rosterModal').style.display = 'none'; }
 
-        async function getIPDetails() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                return await res.json();
-            } catch { return { ip: "Unknown", org: "Unknown" }; }
-        }
-
-        function disableFormSuccess() {
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('statusMessage');
-            btn.disabled = true;
-            btn.innerText = "APPLICATION SUBMITTED!";
-            status.style.display = "block";
-            status.style.color = "#00f0ff";
-            status.innerText = "Your application has been received successfully!";
-        }
-
-        // Form Submit to Bot Direct Chat
-        document.getElementById('joinForm').addEventListener('submit', async (e) => {
+        // Fast Telegram Submit
+        document.getElementById('joinForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            if(localStorage.getItem('rexoSubmitted')) {
-                alert("You have already submitted an application!");
-                return;
-            }
-
-            const btn = document.getElementById('submitBtn');
+            const btn = document.getElementById('subBtn');
             btn.disabled = true;
-            btn.innerText = "SUBMITTING...";
+            btn.innerText = "SENDING...";
 
-            const name = document.getElementById('pName').value;
-            const uid = document.getElementById('pUid').value;
-            const email = document.getElementById('pEmail').value;
-            const insta = document.getElementById('pInsta').value;
+            const payload = {
+                name: document.getElementById('pName').value,
+                uid: document.getElementById('pUid').value,
+                email: document.getElementById('pEmail').value,
+                insta: document.getElementById('pInsta').value,
+                date: new Date().toLocaleString()
+            };
 
-            const ipInfo = await getIPDetails();
+            // Save to Firebase DB
+            db.ref('joinRequests').push(payload);
 
-            // Save in Admin Panel Logs
-            const logs = JSON.parse(localStorage.getItem('rexoLogs')) || [];
-            logs.unshift({ name, uid, email, insta, ip: ipInfo.ip, isp: ipInfo.org, date: new Date().toLocaleString() });
-            localStorage.setItem('rexoLogs', JSON.stringify(logs));
-
-            localStorage.setItem('rexoSubmitted', 'true');
-
-            // NEW DIRECT TELEGRAM BOT CHAT CREDENTIALS
+            // Send to Telegram Bot Chat Directly
             const token = "8530625407:AAGPgZxn0QyUuWoyItZoR16LnfLvfA-GMgk";
-            const chatId = "6859219926"; // Direct Chat ID
-
-            const plainTextMessage = 
-`🔥 NEW TEAM REXO JOIN REQUEST 🔥
-
-👤 Player Name: ${name}
-🎮 Free Fire UID: ${uid}
-📧 Email: ${email}
-📸 Insta ID/URL: ${insta}
-
-🛡️ Visitor Tracking:
-🌐 IP: ${ipInfo.ip}
-📡 ISP: ${ipInfo.org}`;
+            const chatId = "6859219926";
+            const text = `🔥 NEW JOIN REQUEST 🔥\n\n👤 Name: ${payload.name}\n🎮 UID: ${payload.uid}\n📧 Email: ${payload.email}\n📸 Insta: ${payload.insta}`;
 
             fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    chat_id: chatId, 
-                    text: plainTextMessage 
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                disableFormSuccess();
+                body: JSON.stringify({ chat_id: chatId, text: text })
+            }).then(() => {
+                btn.innerText = "SUBMITTED!";
+                document.getElementById('msg').style.display = "block";
+                document.getElementById('msg').innerText = "Request Sent Successfully!";
                 document.getElementById('joinForm').reset();
-            })
-            .catch(err => {
-                console.error(err);
-                disableFormSuccess();
             });
         });
-
-        loadSiteData();
     </script>
 </body>
 </html>
